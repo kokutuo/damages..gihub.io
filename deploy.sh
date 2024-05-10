@@ -16,10 +16,10 @@ git init
 git add -A
 git commit -m 'deploy'
 
-# 部署到 https://<USERNAME>.github.io
-# git push -f git@github.com:<USERNAME>/<USERNAME>.github.io.git master
+# 部署到 https://kokutuo.github.io
+# git push -f git@github.com:kokutuo/kokutuo.github.io.git master
 
-# 部署到 https://<USERNAME>.github.io/<REPO>
-# git push -f git@github.com:<USERNAME>/<REPO>.git master:gh-pages
+# 部署到 https://kokutuo.github.io/damages
+git push -f git@github.com:kokutuo/damages.git master:gh-pages
 
 cd -
