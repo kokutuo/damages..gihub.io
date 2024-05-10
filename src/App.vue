@@ -42,6 +42,7 @@
       <el-table
         :summary-method="getSummaries"
         :data="tableData"
+        stripe
         show-summary
         style="width: 100%"
       >
@@ -49,8 +50,9 @@
         <el-table-column prop="start" label="利息起算日期"> </el-table-column>
         <el-table-column prop="end" label="利息截止日期"> </el-table-column>
         <el-table-column prop="days" label="计算天数"> </el-table-column>
-        <el-table-column prop="lpr" label="LPR"> </el-table-column>
-        <el-table-column prop="interest" label="利息"> </el-table-column>
+        <el-table-column prop="lpr" label="LPR（%）"> </el-table-column>
+        <el-table-column prop="interest" label="利息" :formatter="intFt">
+        </el-table-column>
       </el-table>
     </div>
   </div>
@@ -150,24 +152,34 @@ export default {
 
     exportExcel() {
       let data = [...this.tableData];
+      console.log("🚀 ~ exportExcel ~ data:", data);
 
-      // data.push({
-      //   total: "合计",
-      //   start: "",
-      //   end: "",
-      //   days: "",
-      //   lpr: "",
-      //   interest: this.round(
-      //     data.reduce((prev, curr) => {
-      //       const value = Number(curr.interest);
-      //       if (!isNaN(value)) {
-      //         return prev.interest + curr.interest;
-      //       } else {
-      //         return prev.interest;
-      //       }
-      //     }, 0)
-      //   ),
-      // });
+      if (data.length === 0) {
+        this.$message.warning({
+          message: "请先进行计算",
+          duration: 1500,
+        });
+        return;
+      }
+
+      let totalInt = this.round(
+        data.reduce((prev, curr) => {
+          return +prev + +curr.interest;
+        }, 0)
+      );
+
+      let totalDay = data.reduce((prev, curr) => {
+        return +prev + +curr.days;
+      }, 0);
+
+      data.push({
+        total: "合计",
+        start: this.formData.startDate,
+        end: this.formData.endDate,
+        days: totalDay,
+        lpr: "/",
+        interest: +totalInt,
+      });
 
       console.log("🚀 ~ file: App.vue:195 ~ exportExcel ~ data:", data);
 
@@ -176,11 +188,11 @@ export default {
         "利息起算日期",
         "利息截止日期",
         "计算天数",
-        "LPR",
+        "LPR（%）",
         "利息",
       ];
       Excel.exportExcel(
-        this.tableData,
+        data,
         "违约金计算表格" + Dayjs().format() + ".xlsx",
         header
       );
@@ -192,6 +204,18 @@ export default {
       columns.forEach((column, index) => {
         if (index === 0) {
           sums[index] = "合计";
+          return;
+        }
+        if (index === 1) {
+          sums[index] = this.formData.startDate;
+          return;
+        }
+        if (index === 2) {
+          sums[index] = this.formData.endDate;
+          return;
+        }
+        if (index === 4) {
+          sums[index] = "/";
           return;
         }
         const values = data.map((item) => Number(item[column.property]));
@@ -214,8 +238,8 @@ export default {
       return sums;
     },
 
-    round(x) {
-      return (Math.round(x * (10 ^ 2)) / (10 ^ 2)).toFixed(2);
+    round(x, pre = 2) {
+      return (Math.round(x * (10 ^ pre)) / (10 ^ pre)).toFixed(pre);
     },
 
     diff(date1, date2) {
@@ -236,6 +260,9 @@ export default {
         }
       }
       return result;
+    },
+    intFt(row) {
+      return this.round(row.interest, 3);
     },
   },
 };
@@ -276,5 +303,6 @@ body {
 
 .right {
   flex-grow: 1;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 }
 </style>

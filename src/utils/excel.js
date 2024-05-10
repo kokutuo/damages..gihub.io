@@ -37,6 +37,25 @@ function exportExcel(json, name, header) {
   console.log("🚀 ~ file: excel.js:34 ~ exportExcel ~ keyArray:", keyArray);
   console.log("🚀 ~ file: excel.js:34 ~ exportExcel ~ data:", data);
   const ws = XLSX.utils.aoa_to_sheet(data);
+  // 设置列宽，这里设置为从第1列到第4列，宽度分别为10, 20, 30, 40
+  // 注意：列的索引是从0开始的
+  ws["!cols"] = [
+    { wch: 17 }, // Column A
+    { wch: 20 }, // Column B
+    { wch: 20 }, // Column C
+    { wch: 10 }, // Column D
+    { wch: 10 }, // Column E
+    { wch: 18 }, // Column F
+  ];
+
+  // 设置行高为20
+  ws["!rows"] = Array.from({ length: data.length }, () => ({ hpt: 20 }));
+
+  // 设置A到F列的对齐方式为水平垂直居中
+  for (let col = 0; col < 6; col++) {
+    ws[col + "1"] = { alignment: { horizontal: "center", vertical: "center" } };
+  }
+
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, "SheetJS");
   /* generate file and send to client */
