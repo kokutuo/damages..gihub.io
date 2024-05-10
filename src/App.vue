@@ -1,98 +1,58 @@
 <template>
   <div id="app">
-    <el-form
-      :model="formData"
-      label-width="100px"
-      class="demo-form-inline"
-    >
-      <el-form-item label="本金">
-        <el-input v-model="formData.total"></el-input>
-      </el-form-item>
-      <el-form-item label="利息起算日期">
-        <el-date-picker
-          type="date"
-          placeholder="选择日期"
-          style="width:100%;"
-          v-model="formData.startDate"
-          value-format="yyyy-MM-dd"
-        ></el-date-picker>
-      </el-form-item>
-      <el-form-item label="利息终止日期">
-        <el-date-picker
-          type="date"
-          placeholder="选择日期"
-          style="width:100%;"
-          v-model="formData.endDate"
-          value-format="yyyy-MM-dd"
-        ></el-date-picker>
-      </el-form-item>
-      <el-form-item label="lpr倍率">
-        <el-input v-model="formData.rate"></el-input>
-      </el-form-item>
-      <el-form-item label="lpr">
-        <el-select
-          v-model="formData.lprY"
-          placeholder="请选择活动区域"
-        >
-          <el-option
-            label="一年期"
-            value="oneY"
-          ></el-option>
-          <el-option
-            label="五年期"
-            value="fiveY"
-          ></el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item>
-        <el-button
-          type="primary"
-          @click="onSubmit"
-        >计算</el-button>
-        <el-button
-          type="primary"
-          @click="exportExcel"
-        >导出</el-button>
-      </el-form-item>
-    </el-form>
-
-    <el-table
-      :summary-method="getSummaries"
-      :data="tableData"
-      show-summary
-      style="width: 100%"
-    >
-      <el-table-column
-        prop="total"
-        label="本金"
+    <div class="left">
+      <el-form :model="formData" label-width="100px">
+        <el-form-item label="本金">
+          <el-input v-model="formData.total"></el-input>
+        </el-form-item>
+        <el-form-item label="利息起算日期">
+          <el-date-picker
+            type="date"
+            placeholder="选择日期"
+            style="width: 100%"
+            v-model="formData.startDate"
+            value-format="yyyy-MM-dd"
+          ></el-date-picker>
+        </el-form-item>
+        <el-form-item label="利息终止日期">
+          <el-date-picker
+            type="date"
+            placeholder="选择日期"
+            style="width: 100%"
+            v-model="formData.endDate"
+            value-format="yyyy-MM-dd"
+          ></el-date-picker>
+        </el-form-item>
+        <el-form-item label="lpr倍率">
+          <el-input v-model="formData.rate"></el-input>
+        </el-form-item>
+        <el-form-item label="lpr">
+          <el-select v-model="formData.lprY" placeholder="请选择活动区域">
+            <el-option label="一年期" value="oneY"></el-option>
+            <el-option label="五年期" value="fiveY"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="onSubmit">计算</el-button>
+          <el-button type="primary" @click="exportExcel">导出</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
+    <div class="right">
+      <el-table
+        :summary-method="getSummaries"
+        :data="tableData"
+        show-summary
+        style="width: 100%"
       >
-      </el-table-column>
-      <el-table-column
-        prop="start"
-        label="利息起算日期"
-      >
-      </el-table-column>
-      <el-table-column
-        prop="end"
-        label="利息截止日期"
-      >
-      </el-table-column>
-      <el-table-column
-        prop="days"
-        label="计算天数"
-      >
-      </el-table-column>
-      <el-table-column
-        prop="lpr"
-        label="LPR"
-      >
-      </el-table-column>
-      <el-table-column
-        prop="interest"
-        label="利息"
-      >
-      </el-table-column>
-    </el-table>
+        <el-table-column prop="total" label="本金"> </el-table-column>
+        <el-table-column prop="start" label="利息起算日期"> </el-table-column>
+        <el-table-column prop="end" label="利息截止日期"> </el-table-column>
+        <el-table-column prop="days" label="计算天数"> </el-table-column>
+        <el-table-column prop="lpr" label="LPR"> </el-table-column>
+        <el-table-column prop="interest" label="利息"> </el-table-column>
+      </el-table>
+    </div>
   </div>
 </template>
 
@@ -283,8 +243,8 @@ export default {
 
 <style>
 body {
-  width: 100vw;
-  height: 100vh;
+  margin: 0;
+  padding: 10px;
   box-sizing: border-box;
   background: #eeeeee9d;
 }
@@ -295,7 +255,26 @@ body {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin: 60px auto;
-  max-width: 700px;
+  display: flex;
+}
+
+.left,
+.right {
+  box-sizing: border-box;
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 10px;
+  height: calc(100vh - 20px);
+  overflow: auto;
+}
+
+.left {
+  box-sizing: border-box;
+  width: 600px;
+  margin-right: 20px;
+}
+
+.right {
+  flex-grow: 1;
 }
 </style>
